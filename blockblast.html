@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mini Game — Blockblast</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg">
+
+  <main class="page">
+    <div class="paper game-card">
+      <p class="paper-top">mini game</p>
+      <h1 class="paper-title">blockblast</h1>
+
+      <p class="paper-text" style="margin-top:10px;font-size:14px;">
+        <b>Tap shape</b> → <b>tap papan</b> buat taruh.<br>
+        Atau <b>drag & drop</b> langsung ke papan.<br>
+        Penuh 1 baris / kolom = auto clear ✦
+      </p>
+
+      <div class="bb-hud">
+        <div>Score: <span id="bbScore">0</span></div>
+        <div>Best: <span id="bbBest">0</span></div>
+      </div>
+
+      <div class="bb-wrap">
+        <div class="bb-grid" id="bbGrid"></div>
+
+        <div class="bb-tray">
+          <div class="bb-piece" id="piece0" aria-label="piece 1"></div>
+          <div class="bb-piece" id="piece1" aria-label="piece 2"></div>
+          <div class="bb-piece" id="piece2" aria-label="piece 3"></div>
+        </div>
+
+        <div class="bb-actions">
+          <button class="paper-btn" id="bbNew" type="button">shuffle shapes ↺</button>
+          <a class="paper-btn" href="flappybirds.html">main flappy 🐦</a>
+          <a class="paper-btn" href="final.html">balik ke penutup</a>
+        </div>
+
+        <p class="bb-hint" id="bbHint">Pilih shape dulu.</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="blockblast.js"></script>
+</body>
+</html>

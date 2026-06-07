@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday, aigoo</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ===== FIREWORKS CANVAS ===== */
+    #fireworksCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ===== RIBBON BANNER ===== */
+    .bday-ribbon {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      height: 0;
+      opacity: 0;
+      transition: height .6s cubic-bezier(.4,0,.2,1), opacity .5s;
+      background: linear-gradient(90deg, #9b2335, #c0623a, #c9a96e, #c0623a, #9b2335);
+      background-size: 300% 100%;
+      animation: ribbonShimmer 3s linear infinite;
+    }
+
+    .bday-ribbon.show {
+      height: 44px;
+      opacity: 1;
+    }
+
+    @keyframes ribbonShimmer {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+
+    .bday-ribbon-text {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-style: italic;
+      font-size: 14px;
+      color: #fff;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      animation: ribbonSlide 18s linear infinite;
+      display: inline-block;
+      padding: 0 40px;
+    }
+
+    @keyframes ribbonSlide {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ===== SPARKLE FIELD ===== */
+    .sparkle-field {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 98;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+    .sparkle-field.show { opacity: 1; }
+
+    .sp {
+      position: absolute;
+      border-radius: 50%;
+      animation: spFloat linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes spFloat {
+      0%   { transform: translateY(0) scale(0); opacity: 0; }
+      20%  { opacity: 1; transform: translateY(-18px) scale(1); }
+      80%  { opacity: .6; }
+      100% { transform: translateY(-120px) scale(.3) rotate(360deg); opacity: 0; }
+    }
+
+    /* ===== FLOATING EMOJIS ===== */
+    .float-emoji {
+      position: fixed;
+      font-size: 22px;
+      pointer-events: none;
+      z-index: 97;
+      opacity: 0;
+      animation: floatUp linear forwards;
+      user-select: none;
+    }
+
+    @keyframes floatUp {
+      0%   { transform: translateY(0) rotate(0deg) scale(.7); opacity: 0; }
+      15%  { opacity: 1; transform: translateY(-30px) rotate(-10deg) scale(1); }
+      85%  { opacity: .7; }
+      100% { transform: translateY(-260px) rotate(20deg) scale(.8); opacity: 0; }
+    }
+
+    /* ===== GOLD SHIMMER TITLE ===== */
+    .gold-title {
+      background: linear-gradient(
+        90deg,
+        var(--accent) 0%,
+        #c9a96e 30%,
+        #f0e0b0 48%,
+        #c9a96e 65%,
+        var(--accent) 100%
+      );
+      background-size: 250% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: goldShimmer 3.5s ease infinite;
+    }
+
+    @keyframes goldShimmer {
+      0%   { background-position: 200% 50%; }
+      100% { background-position: -100% 50%; }
+    }
+
+    /* ===== BURST OVERLAY ===== */
+    .burst-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .burst-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 3px solid;
+      opacity: 0;
+      transform: scale(0);
+      animation: burstRing .8s cubic-bezier(.2,0,.4,1) forwards;
+    }
+
+    @keyframes burstRing {
+      0%   { transform: scale(0); opacity: .9; }
+      100% { transform: scale(6); opacity: 0; }
+    }
+
+    /* ===== RICH CONFETTI ===== */
+    .conf-piece {
+      position: fixed;
+      top: -14px;
+      pointer-events: none;
+      z-index: 1001;
+      animation: confFall linear forwards;
+      transform-origin: center;
+    }
+
+    @keyframes confFall {
+      0%   { transform: translateY(0) rotate(0deg) scaleX(1); opacity: 1; }
+      40%  { transform: translateY(40vh) rotate(220deg) scaleX(-1); opacity: 1; }
+      100% { transform: translateY(108vh) rotate(540deg) scaleX(1); opacity: 0; }
+    }
+
+    /* ===== WISH CARD GLOW ===== */
+    #wish.reveal.show {
+      position: relative;
+    }
+    #wish.reveal.show::before {
+      content: '';
+      position: absolute;
+      inset: -18px;
+      border-radius: 18px;
+      background: radial-gradient(ellipse at center, rgba(201,169,110,.14) 0%, transparent 70%);
+      pointer-events: none;
+      animation: gentleGlow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes gentleGlow {
+      0%   { opacity: .4; }
+      100% { opacity: 1; }
+    }
+
+    /* ===== MUSICAL NOTES ===== */
+    .note-float {
+      position: fixed;
+      font-size: 20px;
+      pointer-events: none;
+      z-index: 96;
+      opacity: 0;
+      animation: noteFloat linear forwards;
+    }
+
+    @keyframes noteFloat {
+      0%   { opacity: 0; transform: translate(0,0) rotate(-15deg) scale(.5); }
+      20%  { opacity: .85; transform: translate(10px,-25px) rotate(10deg) scale(1); }
+      60%  { opacity: .6; transform: translate(-8px,-100px) rotate(-8deg) scale(.9); }
+      100% { opacity: 0; transform: translate(12px,-210px) rotate(20deg) scale(.5); }
+    }
+
+    /* ===== STAR BG ===== */
+    .star-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 1.2s;
+    }
+    .star-bg.show { opacity: 1; }
+
+    .star-dot {
+      position: absolute;
+      border-radius: 50%;
+      background: #c9a96e;
+      animation: twinkle ease-in-out infinite alternate;
+    }
+
+    @keyframes twinkle {
+      0%   { opacity: .1; transform: scale(.7); }
+      100% { opacity: .85; transform: scale(1.3); }
+    }
+
+    /* Envelope gold glow on open */
+    .envelope.opened .env-back {
+      box-shadow:
+        0 0 0 2px rgba(201,169,110,.3),
+        0 0 50px rgba(201,169,110,.18),
+        var(--shadow-lg);
+      transition: box-shadow .8s ease;
+    }
+
+    body.ribbon-shown .page { padding-top: 56px; }
+  </style>
+</head>
+<body class="bg">
+
+  <!-- RIBBON -->
+  <div class="bday-ribbon" id="bdayRibbon">
+    <span class="bday-ribbon-text">
+      ✦ Happy Birthday!! ✦ Selamat Ulang Tahun ✦ Semoga Selalu Bahagia ✦ You Are Loved ✦ Semangat Terus Kak ✦ Happy Birthday!! ✦ Selamat Ulang Tahun ✦ Semoga Selalu Bahagia ✦ Keep Strong✦ Semangat Terus Kak ✦&nbsp;
+    </span>
+  </div>
+
+  <!-- SPARKLE FIELD -->
+  <div class="sparkle-field" id="sparkleField"></div>
+
+  <!-- STAR BG -->
+  <div class="star-bg" id="starBg"></div>
+
+  <!-- FIREWORKS -->
+  <canvas id="fireworksCanvas"></canvas>
+
+  <!-- BURST -->
+  <div class="burst-overlay" id="burstOverlay"></div>
+
+  <main class="page">
+    <section class="envelope" id="envWish">
+      <div class="env-back"></div>
+      <div class="env-flap"></div>
+
+      <div class="paper">
+        <p class="paper-top">ada sesuatu buat kakak</p>
+
+        <button class="paper-btn" id="openWishBtn" type="button">
+          silahkan dibuka ✦
+        </button>
+
+        <div id="wish" class="reveal hidden">
+          <h1 class="paper-title gold-title">Happy Birthday, anjania 🎂</h1>
+
+          <p class="paper-text letter-like">
+            semoga panjang umur selalu, dimudahkan egala aktivitas kakak, semoga jadi atlet futsal kota/nasional.<br>
+            aku mengharapkan seluruh yang terbaik untuk kakak.<br>
+            aku mau kakak jangan pernah menyerah dalam mengejar hal apapun.<br><br>
+            cape boleh nyerah jangan kak. walaupun terkadang yang diusahakan ga sesuai tapi itulah yang menjadi pembelajaran
+            kakak kedepannyaa 👀.<br>
+            kita selalu komunikasinyaa kak, kita tetap saling dengar kabar kita sampe kita udah gada. karna kita berteman juga udah 
+            cukup lama. kakak udah ku anggap kakak kandungku 😁😀.
+            intinyaa selalu semangat dan kuat untuk kakak dalam menjalani harii nyaa 🎊<br>
+          </p>
+
+          <a href="reason.html" class="paper-link" data-open-next data-env="envWish">
+            kenapa aku buat ini →
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+  (function () {
+    const CONF_COLORS = ['#e05c5c','#c9a96e','#4caf6e','#4a86e8','#9c6ee8','#e8a838','#ff8fa3','#9b2335','#c0623a'];
+    const CONF_SHAPES = ['■','●','★','♥','▲','◆'];
+
+    /* --- Rich confetti --- */
+    function launchRichConfetti(count) {
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          const el = document.createElement('div');
+          el.className = 'conf-piece';
+          el.textContent = CONF_SHAPES[Math.floor(Math.random() * CONF_SHAPES.length)];
+          el.style.left = Math.random() * 100 + 'vw';
+          el.style.fontSize = (7 + Math.random() * 13) + 'px';
+          el.style.color = CONF_COLORS[Math.floor(Math.random() * CONF_COLORS.length)];
+          el.style.animationDuration = (2.4 + Math.random() * 3.8) + 's';
+          document.body.appendChild(el);
+          setTimeout(() => el.remove(), 7000);
+        }, i * 25);
+      }
+    }
+
+    /* --- Fireworks --- */
+    const canvas = document.getElementById('fireworksCanvas');
+    const ctx    = canvas.getContext('2d');
+    let W, H, animating = false;
+    const particles = [];
+
+    function resizeCanvas() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    function createFirework(x, y) {
+      const hue   = Math.random() * 60 + 5;
+      const count = 60 + Math.floor(Math.random() * 35);
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 / count) * i + (Math.random() - .5) * .4;
+        const speed = 2.8 + Math.random() * 5;
+        particles.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          alpha: 1,
+          size: 2 + Math.random() * 3.5,
+          color: `hsl(${hue + Math.random() * 50}, 88%, ${52 + Math.random() * 28}%)`,
+          decay: .013 + Math.random() * .013,
+          gravity: .065,
+          trail: []
+        });
+      }
+    }
+
+    function animateFireworks() {
+      if (!animating) return;
+      ctx.clearRect(0, 0, W, H);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.trail.push({ x: p.x, y: p.y });
+        if (p.trail.length > 5) p.trail.shift();
+
+        p.x  += p.vx;
+        p.y  += p.vy;
+        p.vy += p.gravity;
+        p.vx *= .975;
+        p.vy *= .975;
+        p.alpha -= p.decay;
+        if (p.alpha <= 0) { particles.splice(i, 1); continue; }
+
+        /* trail */
+        for (let t = 0; t < p.trail.length; t++) {
+          const a = (t / p.trail.length) * p.alpha * .5;
+          ctx.save();
+          ctx.globalAlpha = a;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.trail[t].x, p.trail[t].y, p.size * .55, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      requestAnimationFrame(animateFireworks);
+    }
+
+    function fireFireworks() {
+      animating = true;
+      animateFireworks();
+      const positions = [
+        [W*.25, H*.28],[W*.75, H*.24],[W*.5,  H*.18],
+        [W*.12, H*.45],[W*.88, H*.4 ],[W*.5,  H*.38],
+        [W*.32, H*.14],[W*.68, H*.16],[W*.5,  H*.52],
+      ];
+      positions.forEach(([x, y], i) => setTimeout(() => createFirework(x, y), i * 210));
+      setTimeout(() => {
+        for (let i = 0; i < 6; i++)
+          setTimeout(() => createFirework(Math.random() * W * .8 + W * .1, Math.random() * H * .45 + 60), i * 260);
+      }, 2000);
+      setTimeout(() => { animating = false; ctx.clearRect(0, 0, W, H); }, 6800);
+    }
+
+    /* --- Burst rings --- */
+    function doBurstRings() {
+      const overlay = document.getElementById('burstOverlay');
+      ['#c9a96e','#e05c5c','#9b2335','#c0623a','#4a86e8'].forEach((color, i) => {
+        setTimeout(() => {
+          const ring = document.createElement('div');
+          ring.className = 'burst-ring';
+          ring.style.cssText = `width:60px;height:60px;border-color:${color};animation-duration:${.72+i*.11}s`;
+          overlay.appendChild(ring);
+          setTimeout(() => ring.remove(), 1400);
+        }, i * 110);
+      });
+    }
+
+    /* --- Sparkle field --- */
+    function buildSparkleField() {
+      const field = document.getElementById('sparkleField');
+      field.innerHTML = '';
+      const cols = ['#c9a96e','#e8d5a3','#e05c5c','#ff8fa3','#9c6ee8','#4a86e8','#4caf6e'];
+      for (let i = 0; i < 42; i++) {
+        const sp = document.createElement('div');
+        sp.className = 'sp';
+        sp.style.left = Math.random() * 100 + 'vw';
+        sp.style.top  = (15 + Math.random() * 78) + 'vh';
+        sp.style.background = cols[Math.floor(Math.random() * cols.length)];
+        const sz = (3 + Math.random() * 6) + 'px';
+        sp.style.width = sp.style.height = sz;
+        sp.style.animationDuration = (2 + Math.random() * 4) + 's';
+        sp.style.animationDelay    = (Math.random() * 4) + 's';
+        field.appendChild(sp);
+      }
+      field.classList.add('show');
+    }
+
+    /* --- Star BG --- */
+    function buildStarBg() {
+      const bg = document.getElementById('starBg');
+      for (let i = 0; i < 60; i++) {
+        const s = document.createElement('div');
+        s.className = 'star-dot';
+        s.style.left = Math.random() * 100 + 'vw';
+        s.style.top  = Math.random() * 100 + 'vh';
+        const sz = (1 + Math.random() * 3.5) + 'px';
+        s.style.width = s.style.height = sz;
+        s.style.animationDuration = (1.5 + Math.random() * 3.5) + 's';
+        s.style.animationDelay    = (Math.random() * 3) + 's';
+        bg.appendChild(s);
+      }
+      bg.classList.add('show');
+    }
+
+    /* --- Ribbon --- */
+    function showRibbon() {
+      document.getElementById('bdayRibbon').classList.add('show');
+      document.body.classList.add('ribbon-shown');
+    }
+
+    /* --- Floating emojis --- */
+    const EMOJIS = ['🎂','🎉','🎊','🎈','⭐','✨','💫','🌟','💐','🎁','🏆','❤️','🔥','🎀','🥳'];
+    function spawnEmoji() {
+      const el = document.createElement('div');
+      el.className = 'float-emoji';
+      el.textContent = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+      el.style.left = (4 + Math.random() * 90) + 'vw';
+      el.style.bottom = (Math.random() * 20) + 'vh';
+      el.style.animationDuration = (3.2 + Math.random() * 4.5) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 9000);
+    }
+
+    /* --- Musical notes --- */
+    const NOTES = ['♩','♪','♫','♬'];
+    function spawnNote() {
+      const el = document.createElement('div');
+      el.className = 'note-float';
+      el.textContent = NOTES[Math.floor(Math.random() * NOTES.length)];
+      el.style.left  = (5 + Math.random() * 88) + 'vw';
+      el.style.bottom = (Math.random() * 15) + 'vh';
+      el.style.color  = CONF_COLORS[Math.floor(Math.random() * CONF_COLORS.length)];
+      el.style.animationDuration = (3.5 + Math.random() * 4) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 9000);
+    }
+
+    /* --- Master trigger --- */
+    function triggerSurprise() {
+      doBurstRings();
+      setTimeout(() => { fireFireworks(); launchRichConfetti(110); }, 140);
+      setTimeout(() => { showRibbon(); buildSparkleField(); buildStarBg(); }, 550);
+      setTimeout(() => {
+        for (let i = 0; i < 14; i++) {
+          setTimeout(spawnEmoji, i * 180);
+          setTimeout(spawnNote,  i * 260 + 90);
+        }
+        const ei = setInterval(spawnEmoji, 1300);
+        const ni = setInterval(spawnNote,  1700);
+        setTimeout(() => { clearInterval(ei); clearInterval(ni); }, 14000);
+      }, 350);
+      setTimeout(() => launchRichConfetti(65), 3800);
+    }
+
+    /* --- Hook button --- */
+    const btn = document.getElementById('openWishBtn');
+    if (btn) {
+      btn.addEventListener('click', () => setTimeout(triggerSurprise, 160));
+    }
+  })();
+  </script>
+</body>
+</html>

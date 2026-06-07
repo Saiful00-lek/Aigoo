@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mini Game — Flappy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg">
+
+  <main class="page">
+    <div class="paper game-card">
+      <p class="paper-top">mini game</p>
+      <h1 class="paper-title">flappy birds</h1>
+      <p class="paper-text" style="margin-top:10px;font-size:14px;">
+        <b>Space</b> / <b>klik</b> (laptop) &nbsp;·&nbsp; <b>tap</b> (HP)<br>
+        Lewati pipa, kumpulin skor.
+      </p>
+
+      <div class="game-hud">
+        <div>Score: <span id="score">0</span></div>
+        <div>Best: <span id="best">0</span></div>
+      </div>
+
+      <div class="game-wrap">
+        <canvas id="game" width="480" height="640"></canvas>
+
+        <div class="game-overlay" id="overlay">
+          <div class="overlay-title" id="overlayTitle">Tap untuk mulai</div>
+          <div class="overlay-sub" id="overlaySub">Space / klik / tap untuk terbang</div>
+
+          <div class="overlay-actions">
+            <button class="paper-btn" id="btnStart" type="button">mulai ✦</button>
+            <button class="paper-btn" id="btnRestart" type="button" style="display:none;">main lagi</button>
+            <a class="paper-btn" href="final.html">balik ke penutup</a>
+            <a class="paper-btn" href="blockblast.html">main blockblast</a>
+          </div>
+        </div>
+      </div>
+
+      <p class="paper-text" style="margin-top:14px;opacity:.6;font-size:12.5px;">
+        Tips: jangan spam — tap dengan ritme 😉
+      </p>
+    </div>
+  </main>
+
+  <script src="flappybirds.js"></script>
+</body>
+</html>

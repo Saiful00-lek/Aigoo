@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sebuah Surat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg">
+
+  <main class="page">
+    <section class="envelope" id="envIndex">
+      <div class="env-back"></div>
+      <div class="env-flap"></div>
+
+      <div class="paper pullable">
+        <p class="paper-top">untuk kakakku</p>
+
+        <div class="title-wrap">
+          <h1 class="paper-title">anjania</h1>
+          <img
+            src="image/anjani.jpeg"
+            alt=""
+            class="title-sticker"
+            data-lightbox
+          />
+        </div>
+
+        <p class="paper-text">
+          Halo kakak Anjaniaa.<br>
+          ini ada surprise untuk kakak,<br>
+          baca perlahan seperti buka surat.
+        </p>
+
+        <a class="paper-btn" href="wish.html" data-open-next data-env="envIndex">
+          buka suratnya &rarr;
+        </a>
+
+        <p class="paper-pull-text">tarik untuk membuka</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-backdrop" data-close></div>
+    <div class="lightbox-stage" id="lightboxStage">
+      <img class="lightbox-img" id="lightboxImg" alt="preview" />
+    </div>
+    <button class="lightbox-close" type="button" data-close>✕</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
